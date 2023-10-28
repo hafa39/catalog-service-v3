@@ -14,9 +14,13 @@ spring:
   lifecycle:
     timeout-per-shutdown-phase: 15s
   config:
-    import: "optional:configserver:"
+    #Stops importing configuration data from Config Service
+    import: ""
+  #import: "optional:configserver:"
   cloud:
     config:
+      #Disables the Spring Cloud Config Client integration
+      enabled: false
       uri: http://localhost:8888
       request-connect-timeout: 5000
       request-read-timeout: 5000
@@ -34,11 +38,30 @@ spring:
       connection-timeout: 2000
       maximum-pool-size: 5
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/PolarBookshop
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},trace_id=%X{trace_id},%X{span_id}]"
+
 management:
   endpoints:
     web:
       exposure:
-        include: refresh
+        include: health, prometheus
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 polar:
   greeting: Welcome to the local book catalog!

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalog-config
+  labels:
+    app: catalog-service
+data:
+  application.yml: |
+    polar:
+      greeting: Welcome to the book catalog from Kubernetes!
+    spring:
+      datasource:
+        url: jdbc:postgresql://polar-postgres/polardb_catalog
+    security:
+      oauth2:
+        resourceserver:
+          jwt:
+            issuer-uri: http://polar-keycloak/realms/PolarBookshop
+
+#The API version for ConfigMap objects ❷ The type of object to create
+#The name of the ConfigMap ❹ A set of labels attached to the ConfigMap
+#Section containing the configuration data
+#A key/value pair where the key is the name of a YAML configuration file and the value is its content

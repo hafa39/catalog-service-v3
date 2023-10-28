@@ -3,6 +3,8 @@ package com.example.catalogservice.web;
 import com.example.catalogservice.domain.Book;
 import com.example.catalogservice.domain.BookService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,12 +14,16 @@ public class BookController {
 
     private final BookService bookService;
 
+    private static final Logger log =
+            LoggerFactory.getLogger(BookController.class);
+
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
     @GetMapping()
     public Iterable<Book> get(){
+        log.info("Fetching the list of books in the catalog");
         return bookService.viewBookList();
     }
     @GetMapping("/{isbn}")
