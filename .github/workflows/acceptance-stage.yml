@@ -1,0 +1,55 @@
+name: Acceptance Stage
+on:
+  workflow_run:
+    workflows: ['Commit Stage']
+    types: [completed]
+    branches: main
+concurrency: acceptance #Ensures that only one workflow runs at a time. When an acceptance stage run has completed, we are not interested in verifying all the release candidates that have queued up in the meantime. We are only interested in the newest one, so the others can be discarded. GitHub Actions provides a mechanism for handling this scenario via concurrency controls.
+
+  #❶ The name of the workflow
+  #❷ This workflow is triggered when the Commit Stage workflow completes a run.
+  #❸ This workflow runs only on the main branch.
+#env:
+#  OWNER: polarbookshop
+#  REGISTRY: ghcr.io
+#  APP_REPO: catalog-service
+#  DEPLOY_REPO: polar-deployment
+#  VERSION: ${{ github.sha }}
+
+
+jobs:
+  functional:
+    name: Functional Acceptance Tests
+    #The job runs only if the commit stage completed successfully.
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - run: echo "Running functional acceptance tests"
+  performance:
+    name: Performance Tests
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - run: echo "Running performance tests"
+  security:
+    name: Security Tests
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - run: echo "Running security tests"
+#  deliver:
+#    name: Deliver release candidate to production
+#    needs: [ functional, performance, security ]
+#    runs-on: ubuntu-22.04
+#    steps:
+#      - name: Deliver application to production
+#        uses: peter-evans/repository-dispatch@v2
+#        with:
+#          token: ${{ secrets.DISPATCH_TOKEN }}
+#          repository: ${{ env.OWNER }}/${{ env.DEPLOY_REPO }}
+#          event-type: app_delivery
+#          client-payload: '{
+#            "app_image": "${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.APP_REPO }}",
+#            "app_name": "${{ env.APP_REPO }}",
+#            "app_version": "${{ env.VERSION }}"
+#          }'
