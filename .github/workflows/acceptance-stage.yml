@@ -9,12 +9,12 @@ concurrency: acceptance #Ensures that only one workflow runs at a time. When an 
   #❶ The name of the workflow
   #❷ This workflow is triggered when the Commit Stage workflow completes a run.
   #❸ This workflow runs only on the main branch.
-#env:
-#  OWNER: polarbookshop
-#  REGISTRY: ghcr.io
-#  APP_REPO: catalog-service
-#  DEPLOY_REPO: polar-deployment
-#  VERSION: ${{ github.sha }}
+env:
+  OWNER: hafa39
+  REGISTRY: ghcr.io
+  APP_REPO: catalog-service-v3
+  DEPLOY_REPO: polar-deployment
+  VERSION: ${{ github.sha }}
 
 
 jobs:
